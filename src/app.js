@@ -1,3 +1,5 @@
+//usar o express e configurar
+
 import express from 'express'
 import userRoutes from './routes/userRoutes.js'
 
@@ -8,3 +10,4 @@ app.use(express.json())
 app.use("/usuarios", userRoutes);
 
 export default app
+
