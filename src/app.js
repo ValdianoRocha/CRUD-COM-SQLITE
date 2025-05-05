@@ -10,3 +10,4 @@ app.use(express.json())
 app.use("/usuarios", userRoutes);
 
 export default app
+

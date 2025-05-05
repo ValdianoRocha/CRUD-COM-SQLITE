@@ -94,10 +94,14 @@ export const putUser = async (req, res) => {
 export const getIdUser = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
-
-        res.status(200).send(await prisma.user.findUnique({ // localiza e tras do banco a informação que o id seja igual ao id informado 
+        const encontrado = await prisma.user.findUnique({ // localiza e tras do banco a informação que o id seja igual ao id informado 
             where: { id } // parametro de procura 
-        }))
+        })
+        if(!encontrado){
+            res.status(200).send("ID não existe!")
+        }
+
+        res.status(200).json(encontrado)
 
     } catch (error) {
         res.status(500).json({
@@ -124,7 +128,7 @@ export const UserFiltrar = async (req, res) => {
     }
 }
 
-// 
+// filtro: comtem no nome
 export const filterLetra = async (req, res) => {
     try {
         const letra = req.body.letra
