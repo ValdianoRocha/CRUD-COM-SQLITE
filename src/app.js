@@ -1,3 +1,5 @@
+//usar o express e configurar
+
 import express from 'express'
 import userRoutes from './routes/userRoutes.js'
 
