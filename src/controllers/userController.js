@@ -54,7 +54,7 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-//delete usuario pelo URL
+//delete usuario pelo URLcreate products
 export const deleteUserUrl = async (req, res) => {
     try {
         const id = req.params.id
