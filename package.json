@@ -21,7 +21,9 @@
   "homepage": "https://github.com/ValdianoRocha/CRUD-COM-SQLITE#readme",
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "bcrypt": "^5.1.1",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

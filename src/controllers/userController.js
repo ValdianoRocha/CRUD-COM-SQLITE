@@ -1,7 +1,8 @@
 // serve para organizar as funçoes especificas para serem usadas nas rotas 
 
 import { PrismaClient } from '@prisma/client';
-import { skip } from '@prisma/client/runtime/library';
+import { genereteToken, hashPassword } from '../utils/auth.js';
+// import { skip } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient()
 
@@ -19,9 +20,9 @@ export const getAllUsers = async (req, res) => {
 // criar novo usuario usando o pisma e nqlite
 export const postUsers = async (req, res) => {
     try {
-        const { name, email } = req.body
+        const { name, email, password } = req.body
         const newUser = await prisma.user.create({ //cria um novo usuario usando as informaçoes do body e no molde pre definido 
-            data: { name, email } //data -> são as novas informaçoes que sera atualizadas 
+            data: { name, email, password } //data -> são as novas informaçoes que sera atualizadas 
         })
 
         res.status(201).send(`Usuario: ${name} do Email: ${email}, foi criado!`)
@@ -97,7 +98,7 @@ export const getIdUser = async (req, res) => {
         const encontrado = await prisma.user.findUnique({ // localiza e tras do banco a informação que o id seja igual ao id informado 
             where: { id } // parametro de procura 
         })
-        if(!encontrado){
+        if (!encontrado) {
             res.status(200).send("ID não existe!")
         }
 
@@ -184,4 +185,35 @@ export const idMinMax = async (req, res) => {
 
     res.send(maxMin);
 
+}
+
+// registrar novo usuario
+export const registerUser = async (req, res) => {
+    const { name, email, password } = req.body
+
+    try {
+        //criar a senha do usuario hasheada(cryptografada)
+        const hashedPassword = await hashPassword(password)
+
+        //cria usuario no banco de dados 
+        const newRegistrodUser = await prisma.user.create({
+            data: {
+                name: name,
+                email: email,
+                password: hashedPassword
+            }
+        })
+        // gerar um token
+        const token = genereteToken(newRegistrodUser)
+        res.status(201).json({
+            name: newRegistrodUser.name,
+            email: newRegistrodUser.email,
+            token: token
+        })
+    } catch (error) {
+        res.status(400).json({
+            erro: "Erro ao criar usuario",
+            detalhes: error.message
+        })
+    }
 }

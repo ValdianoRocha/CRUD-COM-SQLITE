@@ -1,7 +1,7 @@
 //organizar os roteadores, nessa caso o router de user
 
 import express, { Router } from 'express'
-import { deleteTudo, deleteUser, deleteUserUrl, filterLetra, getAllUsers, getContem, getIdUser, idMinMax, postUsers, putUser, UserFiltrar } from '../controllers/userController.js'
+import { deleteTudo, deleteUser, deleteUserUrl, filterLetra, getAllUsers, getContem, getIdUser, idMinMax, postUsers, putUser, registerUser, UserFiltrar } from '../controllers/userController.js'
 
 const router = express.Router()
 
@@ -26,5 +26,7 @@ router.delete("/tudo/tudo", deleteTudo)
 router.get('/contem/contem/', getContem)
 
 router.get('/filter/MinMax/idMinimo/idMaximo/', idMinMax)
+
+router.post('/register', registerUser)
 
 export default router
