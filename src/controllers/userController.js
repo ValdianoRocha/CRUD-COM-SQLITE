@@ -6,11 +6,15 @@ import { genereteToken, hashPassword } from '../utils/auth.js';
 
 const prisma = new PrismaClient()
 
+// mostrar todos os usuarios 
 export const getAllUsers = async (req, res) => {
     try {
-        res.status(200).json(
-            await prisma.user.findMany() // busca todas as informaçoes do baco de dado 
-        )
+        const usuarios =  await prisma.user.findMany({
+            omit: {
+              password: true,
+            },
+          }); // busca todas as informaçoes do baco de dado
+        res.status(200).json(usuarios)
     }
     catch (error) {
         res.status(500).send("erro no servidor")
@@ -20,15 +24,15 @@ export const getAllUsers = async (req, res) => {
 // criar novo usuario usando o pisma e nqlite
 export const postUsers = async (req, res) => {
     try {
-        const { name, email, password } = req.body
+        const { name, password, email } = req.body
         const newUser = await prisma.user.create({ //cria um novo usuario usando as informaçoes do body e no molde pre definido 
-            data: { name, email, password } //data -> são as novas informaçoes que sera atualizadas 
+            data: { name, password, email } //data -> são as novas informaçoes que sera atualizadas 
         })
 
         res.status(201).send(`Usuario: ${name} do Email: ${email}, foi criado!`)
     } catch (error) {
         res.status(500).json({
-            mensagem: 'ERRO AO CRIAR NOVO USUARIO',
+            mensagem: 'ERRO AO CRIAR NOVO USUARIO(controller)',
             erro: error.message
         })
     }
@@ -72,13 +76,16 @@ export const deleteUserUrl = async (req, res) => {
 export const putUser = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
-        const { name, email } = req.body
+        const { name, email, password } = req.body
         const put = await prisma.user.update({ //atualiza informaçoes do banco de dados pegando um parametro como id de procura 
+            omit: {
+                password: true
+            },
             where: { // parametro de procura 
                 id
             },
             data: { // valor a ser atualizado 
-                name, email
+                name, email, password
             }
         })
         res.status(200).json(put)
