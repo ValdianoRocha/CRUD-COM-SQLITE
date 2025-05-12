@@ -217,3 +217,19 @@ export const registerUser = async (req, res) => {
         })
     }
 }
+
+// export const loginUser = async (req, res) => {
+//     const { email, password } = req.body
+//     const checkEmail = await prisma.user.findUnique({
+//         where: {
+//             email: email
+//         }
+//     })
+//     if (!checkEmail) {
+//         return res.status(400).json({
+//             mensagem: "Email ou Senha esta errada"
+//         })
+//     }
+// const authPassword = await 
+
+// }
