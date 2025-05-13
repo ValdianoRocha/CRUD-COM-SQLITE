@@ -1,7 +1,8 @@
 // serve para organizar as funçoes especificas para serem usadas nas rotas 
 
 import { PrismaClient } from '@prisma/client';
-import { genereteToken, hashPassword } from '../utils/auth.js';
+import { comparePassword, genereteToken, hashPassword } from '../utils/auth.js';
+import { compare } from 'bcrypt';
 // import { skip } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient()
@@ -9,11 +10,11 @@ const prisma = new PrismaClient()
 // mostrar todos os usuarios 
 export const getAllUsers = async (req, res) => {
     try {
-        const usuarios =  await prisma.user.findMany({
+        const usuarios = await prisma.user.findMany({
             omit: {
-              password: true,
+                password: true,
             },
-          }); // busca todas as informaçoes do baco de dado
+        }); // busca todas as informaçoes do baco de dado
         res.status(200).json(usuarios)
     }
     catch (error) {
@@ -225,18 +226,43 @@ export const registerUser = async (req, res) => {
     }
 }
 
-// export const loginUser = async (req, res) => {
-//     const { email, password } = req.body
-//     const checkEmail = await prisma.user.findUnique({
-//         where: {
-//             email: email
-//         }
-//     })
-//     if (!checkEmail) {
-//         return res.status(400).json({
-//             mensagem: "Email ou Senha esta errada"
-//         })
-//     }
-// const authPassword = await 
+export const logim = async (req, res) => {
+    const { email, password } = req.body
+    try {
+        //1. buscar o usuario no db pelo email
+        //2. comparar a senha fornecida com o hash armazenado no db
+        //3. gerar um token
+        //4. retornar uma resposta e o token
 
-// }
+        const user = await prisma.user.findUnique({
+            where: { email: email }
+        });
+
+        if (!user) {
+            return res.status(401).json({
+                mensagem: "credenciais invalida!"
+            })
+        };
+
+        const passwordMastch = await comparePassword(password, user.password)
+
+        if (!passwordMastch) {
+            return res.status(401).json({
+                mensagem: "credenciais invalida!"
+            })
+        }
+
+        const token = genereteToken(user)
+
+        res.status(200).json({
+            mensagem: "login feito com sucesso!",
+            token: token
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            mensagem: "Erro ao fazer login",
+            erro: error.message
+        })
+    }
+}

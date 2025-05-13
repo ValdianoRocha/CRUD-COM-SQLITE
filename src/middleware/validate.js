@@ -28,12 +28,13 @@ export function validate(schema) {
         } catch (error) {
             const message = error.issues.map(err => ({
                 path: err.path[0],
-                message: err.message}))
-          return res.status(400).json({
-            mensagem: "Erro de validação",
-            error: message
+                message: err.message
+            }))
+            return res.status(400).json({
+                mensagem: "Erro de validação",
+                error: message
 
-          })
+            })
         }
     }
 }
