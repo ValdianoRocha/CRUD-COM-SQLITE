@@ -4,6 +4,7 @@ import { verifyToken } from "../utils/auth.js";
 export function authenticate(req, res, next) {
     // obter o token do header authorization
     const authHeader = req.headers['authorization']
+    
 
     const token = authHeader && authHeader.split(' ')[1]
 
@@ -18,6 +19,10 @@ export function authenticate(req, res, next) {
         // adicionar os dados decofificado do token na requisição
 
         const decoded = verifyToken(token)
+        return res.json({
+            mensagem: decoded
+        })
+        
         req.user = decoded
         next()
 

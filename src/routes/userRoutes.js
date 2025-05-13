@@ -14,7 +14,7 @@ router.post("/", validate(createUserSchema), postUsers)
 
 router.delete("/", deleteUser)
 
-router.delete("/:id", deleteUserUrl)
+router.delete("/:id",authenticate, deleteUserUrl)
 
 router.put("/:id", validate(updateUserSchema), putUser)
 
